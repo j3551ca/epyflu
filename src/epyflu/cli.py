@@ -170,9 +170,9 @@ if __name__ == '__main__':
     download_parser.add_argument('-o','--output', type=str, help='Path to file to write download to (*.xls for meta; *.fa for seqs).')
     add_common_args(download_parser)
     download_parser.add_argument('-s','--segments', type=str, 
-    help='List of segments to download metadata or sequences for <["HA", "NA"]>.')
-    download_parser.add_argument('-t','--download_type', type=str, choices=["dna", "metadata", "protein"], help='Type of data to download <"metadata">.')
-    download_parser.add_argument('-g','--gisaid_ids', type=str, help='List of GISAID IDs to download data for ["epi_isl_1", "epi_isl_2"].')
+    help='List of segments to download metadata or sequences for <HA,NA>.')
+    download_parser.add_argument('-t','--download_type', type=str, choices=["dna", "metadata", "protein"], help='Type of data to download <metadata>.')
+    download_parser.add_argument('-g','--gisaid_ids', type=str, help='List of GISAID IDs to download data for (EPI_ISL_1,EPI_ISL_2,EPI_ISL_45).')
 
 
     args = parser.parse_args()
