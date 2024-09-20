@@ -156,17 +156,7 @@ def collect_unreleased(db_path: str) -> str:
                    )
                    AND released = 'No';
                    """)
-    # cursor.execute("""
-    #                SELECT gisaid_id
-    #                FROM isolate_meta
-    #                WHERE isolate_id IN (
-    #                SELECT isolate_id
-    #                FROM isolate_meta
-    #                GROUP BY isolate_id
-    #                HAVING SUM(CASE WHEN released = 'Yes' THEN 1 ELSE 0 END) = 0
-    #                );
-    #                """)
-    # cursor.execute("SELECT gisaid_id FROM isolate_meta WHERE released LIKE '%No%'") 
+
     results = cursor.fetchall()
 
     results_flat = [id[0] for id in results]
@@ -228,5 +218,3 @@ def query_sqlite_db(db_path: str, query: str) -> pd.DataFrame:
 
     return results_df
 
-# check_df = query_sqlite_db('/data/analysis/flu_production/gisaid_uplds/test_upload/test.db',
-# "SELECT * FROM isolate_meta")
