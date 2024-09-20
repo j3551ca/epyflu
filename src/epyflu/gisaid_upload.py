@@ -6,10 +6,6 @@ import pandas as pd
 import json
 
 def verify_dataset(dataset_path: str) -> dict[str, tuple[str, str]]:
-
-    # if not os.path.isdir(dataset_path):
-    #     print(f'Error: The folder {dataset_path} does not exist. Check that spelling and path are accurate.')
-    #     sys.exit(1) - performed in cli module 
     
     seqs_path = []
     for e in ('*.fasta', '*.fa'):
