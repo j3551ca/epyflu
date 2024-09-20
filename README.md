@@ -12,6 +12,7 @@ epyflu assists in uploading sequences and associated metadata to the GISAID EpiF
 - [Installation](#installation)
 - [Usage](#usage)
 - [Parameters](#parameters)
+- [SQLite Database](#sqlite%database)
 - [Troubleshooting](#troubleshooting)
 
 ## Quick-Start
@@ -120,6 +121,13 @@ This subcommand allows variables to be interactively passed to the download func
 | segments    | List of comma-separated segments to download sequences or metadata for. | no | download |
 | gisaid_ids    | List of comma-separated GISAID IDs to download data for (EPI_ISL_1,EPI_ISL_2,EPI_ISL_45). | yes | download |
 | download_type    | Type of data to download (metadata,dna,protein). | no | download |
+
+## SQLite Database
+
+A local SQLite relational database management system is used to store Isolate IDs, minimal set of metadata, and GISAID IDs assigned at the time of submission. The database contains two tables (but can be expanded): `isolate_meta` & `segments_seqs`. A composite primary key of Isolate ID & submission time is used in `isolate_meta` and is linked to the same composite foreign key in `segments_seqs`. Storing data in a relational database locally is less mutable than a csv, allows GISAID IDs to be found before they are released on GISAID EpiFlu, can be expanded to add new tables with new attributes (variables), and is queried with Structured Query Language (SQL) making it a standardized and scalable way to search for records. `epyflu` outputs the database to a user-specified file (ex. /path/to/your/database/flu.db). The user may view this file by importing it into a SQL client like DBeaver, Beekeeper Studio, or Sqlectron. Alternatively, using the sqlite3 and pandas packages, a user may connect to their SQLite database and convert the results of a SQL query to a dataframe using the `read_sql_query` function from pandas (see `query_sqlite_db` function from `epyflu.sqlite_db` module). The database schema are specified below:
+
+
+
 
 ## Troubleshooting
 
