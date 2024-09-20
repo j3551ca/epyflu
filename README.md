@@ -126,7 +126,36 @@ This subcommand allows variables to be interactively passed to the download func
 
 A local SQLite relational database management system is used to store Isolate IDs, minimal set of metadata, and GISAID IDs assigned at the time of submission. The database contains two tables (but can be expanded): `isolate_meta` & `segments_seqs`. A composite primary key of Isolate ID & submission time is used in `isolate_meta` and is linked to the same composite foreign key in `segments_seqs`. Storing data in a relational database locally is less mutable than a csv, allows GISAID IDs to be found before they are released on GISAID EpiFlu, can be expanded to add new tables with new attributes (variables), and is queried with Structured Query Language (SQL) making it a standardized and scalable way to search for records. `epyflu` outputs the database to a user-specified file (ex. /path/to/your/database/flu.db). The user may view this file by importing it into a SQL client like DBeaver, Beekeeper Studio, or Sqlectron. Alternatively, using the sqlite3 and pandas packages, a user may connect to their SQLite database and convert the results of a SQL query to a dataframe using the `read_sql_query` function from pandas (see `query_sqlite_db` function from `epyflu.sqlite_db` module). The database schema are specified below:
 
+```mermaid
+erDiagram
+    isolate_meta {
+        TEXT isolate_id PK
+        TEXT submission_time PK
+        TEXT code
+        TEXT dataset_id
+        TEXT gisaid_id
+        TEXT submission_date
+        TEXT collection_date
+        TEXT subtype
+        TEXT location
+        TEXT host
+        TEXT released
+    }
 
+    segment_seqs {
+        TEXT seg_id PK
+        TEXT isolate_id FK
+        TEXT submission_time FK
+        TEXT code
+        TEXT dataset_id
+        TEXT gisaid_id
+        TEXT submission_date
+        TEXT segment
+    }
+
+    isolate_meta ||--o{ segment_seqs : "contains"
+
+```
 
 
 ## Troubleshooting
