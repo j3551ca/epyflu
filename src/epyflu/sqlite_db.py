@@ -81,6 +81,12 @@ def add_to_sqlite_db(parsed_df: pd.DataFrame, table_name: str, db_path: str) -> 
     print(parsed_df.head())
     #will create if does not exist
     cnxn = sqlite3.connect(db_path)
+
+    db_backup=db_path.replace(".db", "_backup.db")
+    with open(db_path, 'rb') as source_file:
+        with open(db_backup, 'wb') as destination_file:
+            destination_file.write(source_file.read())
+
     cnxn.execute('PRAGMA foreign_keys = ON')
     # store date time as text since sqlite not support DATE/ TIME types. Also primary key is not null by default
     cnxn.execute("""
