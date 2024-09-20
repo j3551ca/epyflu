@@ -124,7 +124,7 @@ def add_to_sqlite_db(parsed_df: pd.DataFrame, table_name: str, db_path: str) -> 
     cnxn.commit()
 
     parsed_df.to_sql(table_name, cnxn, 
-                     if_exists="append", index=False) #append 
+                     if_exists="append", index=False) 
     cnxn.commit()
 
     foreign_key_check = cnxn.execute('PRAGMA foreign_key_check').fetchall()
@@ -140,16 +140,32 @@ def collect_unreleased(db_path: str) -> str:
     cnxn = sqlite3.connect(db_path)
     # may be multiple gisaid_ids per isolate_id, but should not be the case vice versa - therefore search using gisaid_ids to get current, accurate pair published on GISAID
     cursor = cnxn.cursor()
+
     cursor.execute("""
-                   SELECT gisaid_id
-                   FROM isolate_meta
-                   WHERE isolate_id IN (
-                   SELECT isolate_id
+                   WITH isolate_recent AS (
+                   SELECT gisaid_id, MAX(submission_date || ' ' || submission_time) AS latest_submission
                    FROM isolate_meta
                    GROUP BY isolate_id
-                   HAVING SUM(CASE WHEN released = 'Yes' THEN 1 ELSE 0 END) = 0
-                   );
+                   )
+                   SELECT gisaid_id
+                   FROM isolate_meta
+                   WHERE (submission_date || ' ' || submission_time) = (
+                   SELECT latest_submission
+                   FROM isolate_recent
+                   WHERE isolate_meta.gisaid_id = isolate_recent.gisaid_id
+                   )
+                   AND released = 'No';
                    """)
+    # cursor.execute("""
+    #                SELECT gisaid_id
+    #                FROM isolate_meta
+    #                WHERE isolate_id IN (
+    #                SELECT isolate_id
+    #                FROM isolate_meta
+    #                GROUP BY isolate_id
+    #                HAVING SUM(CASE WHEN released = 'Yes' THEN 1 ELSE 0 END) = 0
+    #                );
+    #                """)
     # cursor.execute("SELECT gisaid_id FROM isolate_meta WHERE released LIKE '%No%'") 
     results = cursor.fetchall()
 
