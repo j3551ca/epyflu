@@ -123,4 +123,4 @@ This subcommand allows variables to be interactively passed to the download func
 
 ## Troubleshooting
 
-Please report any issues or suggestions via [GitHub](https://github.com/epyflu/issues).
+Please report any issues or suggestions via [GitHub](https://github.com/j3551ca/epyflu/issues).
