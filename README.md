@@ -7,12 +7,12 @@ epyflu assists in uploading sequences and associated metadata to the GISAID EpiF
 ## Table of Contents
 
 - [Overview](#epyflu)
-- [Quick-Start Guide](#quick-start)
+- [Quick-Start](#quick-start)
 - [Dependencies](#dependencies)
 - [Installation](#installation)
 - [Usage](#usage)
-- [Input](#input)
-- [Output](#output)
+- [Parameters](#parameters)
+- [Troubleshooting](#troubleshooting)
 
 ## Quick-Start
 
@@ -26,13 +26,40 @@ epyflu
 
 ## Dependencies
 
+- python>=3.10
+- gisflu>=0.1.9
+- pandas>=2.2.2
+- sqlite3>=3.46
+
 
 ## Installation
 
-
+Activate a virtual environment (ex. `conda`, `mamba`, `virtualenv`) with python>=3.10 installed and run the following commmand
+```
+pip install epyflu
 ```
 
+Test that installation was successful with
 ```
+epyflu --help
+```
+
+If installation was successful a message similar to the following will be displayed
+```
+usage: epyflu [-h] {upload,update,download} ...
+
+Upload flu seqs to GISAID and accession into local SQLite database.
+
+positional arguments:
+  {upload,update,download}
+                        epyflu subcommands.
+    upload              Upload datasets to GISAID EpiFlu.
+    update              Update local SQLite db with isolate availability on GISAID EpiFlu.
+    download            Download metadata or DNA/protein sequences from GISAID EpiFlu.
+
+options:
+  -h, --help            show this help message and exit
+  ```
 
 ## Usage 
 
@@ -94,3 +121,6 @@ This subcommand allows variables to be interactively passed to the download func
 | gisaid_ids    | List of comma-separated GISAID IDs to download data for (EPI_ISL_1,EPI_ISL_2,EPI_ISL_45). | yes | download |
 | download_type    | Type of data to download (metadata,dna,protein). | no | download |
 
+## Troubleshooting
+
+Please report any issues or suggestions via [GitHub](https://github.com/epyflu/issues).
