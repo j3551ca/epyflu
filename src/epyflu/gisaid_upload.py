@@ -6,7 +6,12 @@ import pandas as pd
 import json
 
 def verify_dataset(dataset_path: str) -> dict[str, tuple[str, str]]:
-    
+    """
+    Check uniqueness and pairing of datasets to upload.
+
+    input: path to directory containing datasets to upload.
+    output: dict of verified datasets {name: /path/to/meta, /path/to/seqs}.
+    """
     seqs_path = []
     for e in ('*.fasta', '*.fa'):
         seqs_path.extend(glob(os.path.join(dataset_path,'**', e), recursive=True))
@@ -52,9 +57,10 @@ def verify_dataset(dataset_path: str) -> dict[str, tuple[str, str]]:
 def gisaid_upload(datasets: dict[str,tuple[str, str]], user: str, 
                   psswd: str, clientid: str, dateformat: str, log_path: str) -> dict[str,tuple[str, str]]:
     """
-    Upload datasets to GISAID with EpiFlu CLI executable
-    input: dictionary of {name: (meta, seqs)}
-    output: dict of GISAID logs {name: path/to/log/json}
+    Upload datasets to GISAID with EpiFlu CLI executable.
+
+    input: dictionary of {name: (meta, seqs)}.
+    output: dict of GISAID logs {name: path/to/log/json}.
     """
     
     executable = os.path.join(os.getcwd(),'bin', 'fluCLI')

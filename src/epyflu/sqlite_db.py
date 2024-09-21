@@ -8,8 +8,8 @@ def parse_gisaid_jsons(gisaid_json_dict: dict[str,tuple[str, str]]) -> tuple[pd.
     Convert json log file(s) produced by upload to GISAID & associated metadata 
     files into df for input into SQLite database.
 
-    input: dict{dataset: (/path/to/log/json, /path/to/metadata/used/in/upload)}
-    output: (isolate_meta_df, segments_df)
+    input: dict{dataset: (/path/to/log/json, /path/to/metadata/used/in/upload)}.
+    output: (isolate_meta_df, segments_df).
     """
     observations = []
     meta_list = []
@@ -78,6 +78,14 @@ def parse_gisaid_jsons(gisaid_json_dict: dict[str,tuple[str, str]]) -> tuple[pd.
 
 
 def add_to_sqlite_db(parsed_df: pd.DataFrame, table_name: str, db_path: str) -> None:
+    """
+    Add isolates and corresponding segments with associated GISAID IDs
+    to user-specified SQLite database file. Creates a backup file,
+    enforces schema, then adds data.
+
+    input: pandas dataframe.
+    output: None. Table is created in database file.
+    """
     print(parsed_df.head())
     #will create if does not exist
     cnxn = sqlite3.connect(db_path)
@@ -136,6 +144,13 @@ def add_to_sqlite_db(parsed_df: pd.DataFrame, table_name: str, db_path: str) -> 
 
 
 def collect_unreleased(db_path: str) -> str:
+    """
+   Collect a list of GISAID IDs that are the most-recently submitted &
+   not yet released to be searched for in GISAID EpiFlu. 
+   
+   input: absolute path to user-specified SQLite database file.
+   output: str of search pattern (GISAID IDs).
+    """
 
     cnxn = sqlite3.connect(db_path)
     # may be multiple gisaid_ids per isolate_id, but should not be the case vice versa - therefore search using gisaid_ids to get current, accurate pair published on GISAID
@@ -166,7 +181,13 @@ def collect_unreleased(db_path: str) -> str:
 
 
 def gisaid_search(user: str, password: str, isl_ids: str) -> pd.DataFrame:
+    """
+    Log into GISAID and search EpiFlu for unreleased GISAID IDs.
 
+    input: GISAID credentials & str of search pattern (GISAID IDs).
+    output: pandas dataframe of publicly available GISAID IDs.
+    """
+    
     cred = gisflu.login(user, password)
 
     gisaid_df = gisflu.search(cred, 
@@ -182,39 +203,50 @@ def gisaid_search(user: str, password: str, isl_ids: str) -> pd.DataFrame:
 
 
 def update_release_status(gisaid_query_results: pd.DataFrame, db_path: str) -> None:
+    """
+    Update local SQLite database release status with results of EpiFlu
+    database search.
 
-    cnxn = sqlite3.connect(db_path)
-    # Create a cursor object
-    cursor = cnxn.cursor()
+    input: pandas dataframe of publicly available GISAID IDs.
+    output: None. SQLite database with updated release status.
+    """
 
-    gisaid_query_results.to_sql('released_ids', cnxn, if_exists = 'replace', index = False)
+    with sqlite3.connect(db_path) as cnxn:
 
-    cursor.execute("""
-    UPDATE isolate_meta
-    SET released = 'Yes'
-    WHERE (isolate_id, gisaid_id) IN (SELECT name, isolate_id FROM released_ids)
-    """)
-    cnxn.commit()
+        gisaid_query_results.to_sql('released_ids', cnxn, if_exists = 'replace', index = False)
 
-    cursor.execute("SELECT gisaid_id, released, submission_date FROM isolate_meta WHERE released LIKE '%Yes%'") 
-    results = cursor.fetchall()
-    print(results[-5:])
+        cnxn.execute("""
+        UPDATE isolate_meta
+        SET released = 'Yes'
+        WHERE (isolate_id, gisaid_id) IN (SELECT name, isolate_id FROM released_ids)
+        """)
+        cnxn.commit()
 
-    # remove temp query result table
-    cursor.execute("DROP TABLE released_ids")
-    cnxn.close()
+        cursor = cnxn.cursor()
+        cursor.execute("SELECT gisaid_id, released, submission_date FROM isolate_meta WHERE released LIKE '%Yes%'") 
+        results = cursor.fetchall()
+        print(results[-5:])
+
+        # remove temp query result table
+        cursor.execute("DROP TABLE released_ids")
 
 
 #%%
 
 def query_sqlite_db(db_path: str, query: str) -> pd.DataFrame:
+    """
+    Execute SQL query on database and return results as pandas dataframe.
+
+    input: absolute path to local SQLite database file, str of SQL query.
+    output: pandas dataframe of results from SQL query.
+    """
     
     cnxn = sqlite3.connect(db_path)
-    cursor = cnxn.cursor()
-
-    results = cursor.fetchall()
-    results_df = pd.read_sql_query(query, cnxn)
-    print(results_df.tail(4))
+    try:
+        results_df = pd.read_sql_query(query, cnxn)
+        print(results_df.tail(4))
+    finally:
+        cnxn.close()
 
     return results_df
 
