@@ -12,7 +12,7 @@ epyflu assists in uploading sequences and associated metadata to the GISAID EpiF
 - [Installation](#installation)
 - [Usage](#usage)
 - [Parameters](#parameters)
-- [SQLite Database](#sqlite%database)
+- [SQLite Database](#sqlite-database)
 - [Troubleshooting](#troubleshooting)
 
 ## Quick-Start
