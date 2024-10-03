@@ -36,9 +36,7 @@ def collect_common_vars(args):
 def update_vars(args):
     db_path = args.database
     if not args.database:
-        db_path = input(
-            "Specify path to existing or new SQLite database (*.db): "
-        ).strip()
+        db_path = input("Specify path to existing or new SQLite database (*.db): ").strip()
         if not db_path:
             print("Error: No database specified.")
             sys.exit(1)
@@ -51,9 +49,7 @@ def download_vars(args, var_source):
     download_type = args.download_type or "metadata"
     gids = args.gisaid_ids
     if not args.output:
-        out_file = input(
-            "Please enter path to file to write download to (*.xls for meta; *.fa for seqs): "
-        )
+        out_file = input("Please enter path to file to write download to (*.xls for meta; *.fa for seqs): ")
         if not out_file:
             print("Error: No output file specified.")
             sys.exit(1)
@@ -90,16 +86,12 @@ def upload_vars(args, var_source):
     dateform = args.dateformat or "YYYYMMDD"
 
     if not input_dir:
-        input_dir = input(
-            "Please enter path to folder containing dataset(s) to upload: "
-        ).strip()
+        input_dir = input("Please enter path to folder containing dataset(s) to upload: ").strip()
         if not input_dir:
             print("Error: No dataset specified.")
             sys.exit(1)
     if not os.path.isdir(input_dir):
-        print(
-            f"Error: The folder {input_dir} does not exist. Check that spelling and path are accurate."
-        )
+        print(f"Error: The folder {input_dir} does not exist. Check that spelling and path are accurate.")
         sys.exit(1)
     if not cid:
         cid = getpass("Please enter GISAID EpiFlu client ID: ")
@@ -107,16 +99,12 @@ def upload_vars(args, var_source):
             print("Error: GISAID EpiFlu client ID missing.")
             sys.exit(1)
     if not log_dir:
-        log_dir = input(
-            "Please enter path of directory to write GISAID logs to: "
-        ).strip()
+        log_dir = input("Please enter path of directory to write GISAID logs to: ").strip()
         if not log_dir:
             print("Error: log path not specified.")
             sys.exit(1)
     if not os.path.isdir(log_dir):
-        print(
-            f"Error: The folder {log_dir} does not exist. Check that spelling and path are accurate."
-        )
+        print(f"Error: The folder {log_dir} does not exist. Check that spelling and path are accurate.")
         sys.exit(1)
         # only for interactive user - assume cli user specified or is ok with default:
     if not args.dateformat and not args.input and var_source == "prompted":
@@ -134,20 +122,14 @@ def add_common_args(subcommand):
     Add args that are common among subcommands so they are available to each
     respective parser.
     """
-    subcommand.add_argument(
-        "-u", "--username", type=str, help="GISAID EpiFlu username."
-    )
-    subcommand.add_argument(
-        "-p", "--password", type=str, help="GISAID EpiFlu password."
-    )
+    subcommand.add_argument("-u", "--username", type=str, help="GISAID EpiFlu username.")
+    subcommand.add_argument("-p", "--password", type=str, help="GISAID EpiFlu password.")
 
 
 def main(args):
 
     if args.command is None:
-        print(
-            "Error: No subcommand provided. Please specify a subcommand (upload, update, download)."
-        )
+        print("Error: No subcommand provided. Please specify a subcommand (upload, update, download).")
         parser.print_help()
     else:
         usr, psswd, var_source = collect_common_vars(args)
@@ -157,9 +139,7 @@ def main(args):
             # print(f"upload subcommand {var_source}")
             db_path = update_vars(args)
             verified_datasets = verify_dataset(input_dir)
-            gisaid_jsons = gisaid_upload(
-                verified_datasets, usr, psswd, cid, dateform, log_dir
-            )
+            gisaid_jsons = gisaid_upload(verified_datasets, usr, psswd, cid, dateform, log_dir)
             isl_meta, segs_df = parse_gisaid_jsons(gisaid_jsons)
             add_to_sqlite_db(isl_meta, "isolate_meta", db_path)
             add_to_sqlite_db(segs_df, "segment_seqs", db_path)
@@ -168,9 +148,7 @@ def main(args):
 
             db_path = update_vars(args)
             if not os.path.isfile(db_path):
-                print(
-                    "This database does not exist. Run epyflu upload first or check spelling matches existing db."
-                )
+                print("This database does not exist. Run epyflu upload first or check spelling matches existing db.")
                 sys.exit(1)
             # gisaid_ids of isolates - showing as unreleased in sqlite db & part of isolate_id group that has
             # no released gisaid_ids - to be searched in gisaid
@@ -185,14 +163,10 @@ def main(args):
 
 if __name__ == "__main__":
 
-    parser = argparse.ArgumentParser(
-        description="Upload flu seqs to GISAID and accession into local SQLite database."
-    )
+    parser = argparse.ArgumentParser(description="Upload flu seqs to GISAID and accession into local SQLite database.")
     # subcommand parsers
     subparsers = parser.add_subparsers(dest="command", help="epyflu subcommands.")
-    upload_parser = subparsers.add_parser(
-        "upload", help="Upload datasets to GISAID EpiFlu."
-    )
+    upload_parser = subparsers.add_parser("upload", help="Upload datasets to GISAID EpiFlu.")
     update_parser = subparsers.add_parser(
         "update",
         help="Update local SQLite db with isolate availability on GISAID EpiFlu.",
@@ -210,9 +184,7 @@ if __name__ == "__main__":
         help='Path to folder containing "metadata" and "sequences" to upload.',
     )
     add_common_args(upload_parser)
-    upload_parser.add_argument(
-        "-c", "--clientid", type=str, help="GISAID EpiFlu clientID."
-    )
+    upload_parser.add_argument("-c", "--clientid", type=str, help="GISAID EpiFlu clientID.")
     upload_parser.add_argument(
         "-d",
         "--dateformat",
@@ -220,9 +192,7 @@ if __name__ == "__main__":
         choices=["YYYYMMDD", "YYYYDDMM", "DDMMYYYY", "MMDDYYYY"],
         help="The format of dates in GISAID EpiFlu metadata <YYYYMMDD>.",
     )
-    upload_parser.add_argument(
-        "-l", "--log", type=str, help="Path to dir to write log to."
-    )
+    upload_parser.add_argument("-l", "--log", type=str, help="Path to dir to write log to.")
 
     # refresh availability of isolates on GISAID in local db
     update_parser.add_argument(

@@ -19,9 +19,7 @@ def verify_dataset(dataset_path: str) -> dict[str, tuple[str, str]]:
     for file in seqs_path:
         k = os.path.basename(file).rsplit(".", 1)[0]
         if k in seqs.keys():
-            print(
-                f'Error: multiple sequence files with the name "{k}" in {dataset_path}*.\nRename with unique name.'
-            )
+            print(f'Error: multiple sequence files with the name "{k}" in {dataset_path}*.\nRename with unique name.')
             sys.exit(1)
         seqs[k] = os.path.abspath(file)
 
@@ -31,9 +29,7 @@ def verify_dataset(dataset_path: str) -> dict[str, tuple[str, str]]:
     for file in metadata_path:
         k = os.path.basename(file).split(".csv")[0]
         if k in meta.keys():
-            print(
-                f"Error: multiple metadata files with the name {k} in {dataset_path}.\nRename with unique name."
-            )
+            print(f"Error: multiple metadata files with the name {k} in {dataset_path}.\nRename with unique name.")
             sys.exit(1)
         meta[k] = os.path.abspath(file)
 
@@ -45,9 +41,7 @@ def verify_dataset(dataset_path: str) -> dict[str, tuple[str, str]]:
         seqs_missing_meta = set(seqs.keys()) - set(meta.keys())
         for k in seqs_missing_meta:
             missing.append(os.path.basename(seqs[k]))
-        print(
-            f"Note: The following sequence file(s) are missing metadata and will not be uploaded:\n{missing}"
-        )
+        print(f"Note: The following sequence file(s) are missing metadata and will not be uploaded:\n{missing}")
 
     datasets = {k: (meta[k], seqs[k]) for k in common_files}
 
@@ -72,9 +66,7 @@ def gisaid_upload(
     executable = os.path.join(os.getcwd(), "bin", "fluCLI")
 
     if not os.path.isfile(executable):
-        print(
-            f"Error: GISAID executable not found in {executable}.\nCheck path & permissions."
-        )
+        print(f"Error: GISAID executable not found in {executable}.\nCheck path & permissions.")
 
     num_fails = 0
     dataset_logs = {}
@@ -85,14 +77,22 @@ def gisaid_upload(
         gisaid_log = os.path.join(log_path, "dataset_" + k + "_gisaid.json")
 
         cmmnd = [
-            executable, "upload",
-            "--username", user,
-            "--password", psswd,
-            "--clientid", clientid,
-            "--log", gisaid_log,
-            "--metadata", pair[0],
-            "--fasta", pair[1],
-            "--dateformat", dateformat
+            executable,
+            "upload",
+            "--username",
+            user,
+            "--password",
+            psswd,
+            "--clientid",
+            clientid,
+            "--log",
+            gisaid_log,
+            "--metadata",
+            pair[0],
+            "--fasta",
+            pair[1],
+            "--dateformat",
+            dateformat,
         ]
 
         output = subprocess.run(cmmnd, capture_output=True, text=True)
@@ -101,15 +101,11 @@ def gisaid_upload(
         # Also reason check = True removed in above command.
         if output.returncode != 0:
             num_fails += 1
-            upload_error_file = os.path.join(
-                log_path, "dataset_" + k + "_upload_error.log"
-            )
+            upload_error_file = os.path.join(log_path, "dataset_" + k + "_upload_error.log")
             with open(upload_error_file, "w") as f:
                 for line in output.stderr:
                     f.write(line)
-            print(
-                f"Unsuccessful upload of {k} dataset. \nSee {upload_error_file} for details."
-            )
+            print(f"Unsuccessful upload of {k} dataset. \nSee {upload_error_file} for details.")
             print(f"Exit status: {output.returncode}")
         else:
             print(f"Successful upload of {k} dataset to GISAID.")
@@ -120,8 +116,6 @@ def gisaid_upload(
             dataset_logs[k] = None
 
     num_pass = len(datasets.keys()) - num_fails
-    print(
-        f"{num_pass} of {len(datasets.keys())} datasets uploaded to GISAID successfully."
-    )
+    print(f"{num_pass} of {len(datasets.keys())} datasets uploaded to GISAID successfully.")
 
     return dataset_logs

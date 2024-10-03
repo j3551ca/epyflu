@@ -4,9 +4,7 @@ import sqlite3
 import gisflu
 
 
-def parse_gisaid_jsons(
-    gisaid_json_dict: dict[str, tuple[str, str]]
-) -> tuple[pd.DataFrame, pd.DataFrame]:
+def parse_gisaid_jsons(gisaid_json_dict: dict[str, tuple[str, str]]) -> tuple[pd.DataFrame, pd.DataFrame]:
     """
     Convert json log file(s) produced by upload to GISAID & associated metadata
     files into df for input into SQLite database.
@@ -34,9 +32,7 @@ def parse_gisaid_jsons(
     meta = pd.concat(meta_list)
 
     df[["sample_id", "gisaid_id"]] = df["msg"].str.split("; ", expand=True)
-    df[["submission_date", "submission_time"]] = df["timestamp"].str.split(
-        " ", expand=True
-    )
+    df[["submission_date", "submission_time"]] = df["timestamp"].str.split(" ", expand=True)
     df.drop(["timestamp", "msg"], axis=1, inplace=True)
 
     epi_ids_df = df.loc[df["code"].isin(["epi_id", "epi_isl_id"])].copy()
@@ -47,14 +43,10 @@ def parse_gisaid_jsons(
     epi_segs_df = epi_ids_df[epi_ids_df["code"] == "epi_id"]
 
     meta.columns = meta.columns.str.lower()
-    meta.columns = [
-        col.replace("(", "").replace(")", "").replace(" ", "_") for col in meta.columns
-    ]
+    meta.columns = [col.replace("(", "").replace(")", "").replace(" ", "_") for col in meta.columns]
     seg_cols = meta.filter(regex=r"^seq_id").columns.tolist()
 
-    meta_minimal = meta[
-        ["isolate_name", "collection_date", "subtype", "location", "host"]
-    ]
+    meta_minimal = meta[["isolate_name", "collection_date", "subtype", "location", "host"]]
     meta_melted = pd.melt(
         meta,
         id_vars="isolate_name",
@@ -85,9 +77,7 @@ def parse_gisaid_jsons(
     ).drop(columns=["segment_seq_id"])
     #  validate = "one_to_one")
 
-    epi_segs_meta.rename(
-        columns={"sample_id": "seg_id", "isolate_name": "isolate_id"}, inplace=True
-    )
+    epi_segs_meta.rename(columns={"sample_id": "seg_id", "isolate_name": "isolate_id"}, inplace=True)
 
     epi_isl_meta = epi_isl_meta.drop_duplicates(subset=["isolate_id", "gisaid_id"])
     epi_segs_meta = epi_segs_meta.drop_duplicates(subset=["isolate_id", "gisaid_id"])
@@ -212,9 +202,7 @@ def gisaid_search(user: str, password: str, isl_ids: str) -> pd.DataFrame:
 
     cred = gisflu.login(user, password)
 
-    gisaid_df = gisflu.search(
-        cred, searchPattern=isl_ids, submitDateFrom="2017-01-01", recordLimit=700000
-    )
+    gisaid_df = gisflu.search(cred, searchPattern=isl_ids, submitDateFrom="2017-01-01", recordLimit=700000)
 
     gisaid_df.columns = gisaid_df.columns.str.lower()
     gisaid_df.columns = [col.replace(" ", "_") for col in gisaid_df.columns]
@@ -233,9 +221,7 @@ def update_release_status(gisaid_query_results: pd.DataFrame, db_path: str) -> N
 
     with sqlite3.connect(db_path) as cnxn:
 
-        gisaid_query_results.to_sql(
-            "released_ids", cnxn, if_exists="replace", index=False
-        )
+        gisaid_query_results.to_sql("released_ids", cnxn, if_exists="replace", index=False)
 
         cnxn.execute(
             """
@@ -247,9 +233,7 @@ def update_release_status(gisaid_query_results: pd.DataFrame, db_path: str) -> N
         cnxn.commit()
 
         cursor = cnxn.cursor()
-        cursor.execute(
-            "SELECT gisaid_id, released, submission_date FROM isolate_meta WHERE released LIKE '%Yes%'"
-        )
+        cursor.execute("SELECT gisaid_id, released, submission_date FROM isolate_meta WHERE released LIKE '%Yes%'")
         results = cursor.fetchall()
         print(results[-5:])
 

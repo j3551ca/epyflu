@@ -17,6 +17,4 @@ def gisaid_download(
     output: None. User-specified file containing downloaded (meta)data.
     """
     cred = gisflu.login(user, password)
-    gisflu.download(
-        cred, gisaid_ids, downloadType=download_type, segments=segs, filename=output
-    )
+    gisflu.download(cred, gisaid_ids, downloadType=download_type, segments=segs, filename=output)
