@@ -17,14 +17,12 @@ def parse_gisaid_jsons(gisaid_json_dict: dict[str,tuple[str, str]]) -> tuple[pd.
     meta = []
 
     for k, v in gisaid_json_dict.items():
-        print(k)
-        # observations = []
+        print(f"Parsing dataset: {k}...")
         if v != None:
             with open(v[0], "r") as in_json:
                 for line in in_json:
                     observation = json.loads(line.strip())
                     observation["dataset_id"] = k
-                    # print(observation["timestamp"])
                     observations.append(observation)
             meta_df = pd.read_csv(v[1], sep = ',', header = 0)
         meta_list.append(meta_df)
@@ -87,7 +85,6 @@ def add_to_sqlite_db(parsed_df: pd.DataFrame, table_name: str, db_path: str) -> 
     output: None. Table is created in database file.
     """
     print(parsed_df.head())
-    #will create if does not exist
     cnxn = sqlite3.connect(db_path)
 
     db_backup=db_path.replace(".db", "_backup.db")

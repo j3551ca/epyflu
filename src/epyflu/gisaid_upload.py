@@ -21,9 +21,6 @@ def verify_dataset(dataset_path: str) -> dict[str, tuple[str, str]]:
             print(f'Error: multiple sequence files with the name "{k}" in {dataset_path}*.\nRename with unique name.')
             sys.exit(1)
         seqs[k] = os.path.abspath(file)
-    
-    # for k, v in seqs.items():
-    #     print(k,v)
 
     metadata_path = glob(os.path.join(dataset_path, '**','*.csv'), recursive=True)
 
@@ -35,10 +32,8 @@ def verify_dataset(dataset_path: str) -> dict[str, tuple[str, str]]:
             sys.exit(1)
         meta[k] = os.path.abspath(file)
     
-    # print(metadata_path)
     # only identically named fasta and meta will be kept
     common_files = set(meta.keys()).intersection(seqs.keys())
-    # print(common_files)
 
     missing = []
     if len(set(seqs.keys())-set(meta.keys())) > 0:
@@ -74,7 +69,6 @@ def gisaid_upload(datasets: dict[str,tuple[str, str]], user: str,
 
         gisaid_log = os.path.join(log_path, "dataset_" + k + "_gisaid.json")
 
-    # cmmnd = [executable, 'version']
         cmmnd = [executable, 'upload', 
                 '--username', user,
                 '--password', psswd,
