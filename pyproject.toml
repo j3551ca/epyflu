@@ -1,7 +1,7 @@
 [project]
 name = "epyflu"
 version = "0.1.0"
-description = "Upload to GISAID, record in local sqlite3 db, 
+description = "Upload to GISAID, record in local sqlite3 db,
 search/download GISAID to update released in local db"
 authors = [
     { name = "j3551ca", email = "jessica.caleta@phac-aspc.gc.ca" },
