@@ -28,7 +28,7 @@ epyflu
 ## Dependencies
 
 - python>=3.10
-- gisflu>=0.1.9
+- gisflu>=0.1.9 fork (pip install git+https://github.com/j3551ca/gisflu.git@master#egg=gisflu)
 - pandas>=2.2.2
 - sqlite3>=3.46
 
