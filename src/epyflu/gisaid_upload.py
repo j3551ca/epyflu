@@ -2,8 +2,6 @@ import os
 import sys
 from glob import glob 
 import subprocess
-import pandas as pd
-import json
 
 def verify_dataset(dataset_path: str) -> dict[str, tuple[str, str]]:
     """
