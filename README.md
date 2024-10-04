@@ -37,7 +37,7 @@ epyflu
 
 Activate a virtual environment (ex. `conda`, `mamba`, `virtualenv`) with python>=3.10 installed and run the following commmand
 ```
-pip install epyflu
+pip install epyflu git+https://github.com/j3551ca/gisflu.git@master#egg=gisflu
 ```
 
 Test that installation was successful with
