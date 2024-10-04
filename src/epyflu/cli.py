@@ -144,7 +144,7 @@ def main(args):
             add_to_sqlite_db(isl_meta, "isolate_meta", db_path)
             add_to_sqlite_db(segs_df, "segment_seqs", db_path)
 
-        if args.command == "update":
+        elif args.command == "update":
 
             db_path = update_vars(args)
             if not os.path.isfile(db_path):
@@ -156,7 +156,7 @@ def main(args):
             gisaid_df = gisaid_search(usr, psswd, not_released)
             update_release_status(gisaid_df, db_path)
 
-        if args.command == "download":
+        elif args.command == "download":
             seg_list, download_type, out_file, gids = download_vars(args, var_source)
             gisaid_download(usr, psswd, gids, out_file, download_type, seg_list)
 
