@@ -1,12 +1,17 @@
 [project]
 name = "epyflu"
-version = "0.1.3"
+dynamic = ["version"]
 description = "Upload to GISAID, record in local sqlite3 db, search/download GISAID to update released in local db"
 authors = [
     { name = "j3551ca", email = "jessica.caleta@phac-aspc.gc.ca" },
 ]
 requires-python = ">=3.10"
+dependencies=[
+    "pandas>=2.2.2",
+    "gisflu @ git+https://github.com/j3551ca/gisflu.git@master",
+]
 readme = "README.md"
+keywords = ["upload", "cli", "download", "sqlite", "flu"]
 
 [project.urls]
 Docs = "https://github.com/j3551ca/epyflu"
@@ -21,17 +26,10 @@ text = "MIT"
 
 [build-system]
 requires = [
-    "pdm-backend",
+    "setuptools >= 61.0",
+    "setuptools-scm",
 ]
-build-backend = "pdm.backend"
+build-backend = "setuptools.build_meta"
 
-[tool.pdm]
-packages = ["epyflu"]
-
-[tool.pdm.dependencies]
-pandas = ">=2.2.2"
-gisflu = { git = "https://github.com/j3551ca/gisflu.git", rev = "master" }
-[tool.pdm.dev-dependencies]
-dev = [
-    "twine>=5.1.1",
-]
+[tool.setuptools_scm]
+version_file = "src/epyflu/_version.py"
