@@ -25,6 +25,9 @@ requires = [
 ]
 build-backend = "pdm.backend"
 
+[tool.pdm]
+packages = ["epyflu"]
+
 [tool.pdm.dependencies]
 pandas = ">=2.2.2"
 gisflu = { git = "https://github.com/j3551ca/gisflu.git", rev = "master" }
