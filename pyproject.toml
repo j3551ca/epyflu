@@ -8,8 +8,7 @@ authors = [
 requires-python = ">=3.10"
 readme = "README.md"
 dependencies = [
-    "pandas>=2.2.3",
-    "gisflu @ git+https://github.com/j3551ca/gisflu.git@master",
+    "pandas>=2.2.2",
 ]
 
 [project.urls]
