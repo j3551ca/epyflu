@@ -7,6 +7,10 @@ authors = [
 ]
 requires-python = ">=3.10"
 readme = "README.md"
+dependencies = [
+    "pandas>=2.2.3",
+    "gisflu @ git+https://github.com/j3551ca/gisflu.git@master",
+]
 
 [project.urls]
 Docs = "https://github.com/j3551ca/epyflu"
@@ -28,9 +32,6 @@ build-backend = "pdm.backend"
 [tool.pdm]
 packages = ["epyflu"]
 
-[tool.pdm.dependencies]
-pandas = ">=2.2.2"
-gisflu = { git = "https://github.com/j3551ca/gisflu.git", rev = "master" }
 [tool.pdm.dev-dependencies]
 dev = [
     "twine>=5.1.1",
