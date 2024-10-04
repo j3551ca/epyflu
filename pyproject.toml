@@ -6,12 +6,7 @@ authors = [
     { name = "j3551ca", email = "jessica.caleta@phac-aspc.gc.ca" },
 ]
 requires-python = ">=3.10"
-dependencies=[
-    "pandas>=2.2.2",
-    "gisflu @ git+https://github.com/j3551ca/gisflu.git@master",
-]
 readme = "README.md"
-keywords = ["upload", "cli", "download", "sqlite", "flu"]
 
 [project.urls]
 Docs = "https://github.com/j3551ca/epyflu"
@@ -26,7 +21,17 @@ text = "MIT"
 
 [build-system]
 requires = [
-    "setuptools >= 61.0",
-    "wheel",
+    "pdm-backend",
 ]
-build-backend = "setuptools.build_meta"
+build-backend = "pdm.backend"
+
+[tool.pdm]
+packages = ["epyflu"]
+
+[tool.pdm.dependencies]
+pandas = ">=2.2.2"
+gisflu = { git = "https://github.com/j3551ca/gisflu.git", rev = "master" }
+[tool.pdm.dev-dependencies]
+dev = [
+    "twine>=5.1.1",
+]
