@@ -27,6 +27,6 @@ text = "MIT"
 [build-system]
 requires = [
     "setuptools >= 61.0",
-    "setuptools-scm",
+    "wheel",
 ]
 build-backend = "setuptools.build_meta"
