@@ -2,15 +2,15 @@ import argparse
 import os
 import sys
 from getpass import getpass
-from gisaid_upload import verify_dataset, gisaid_upload
-from sqlite_db import (
+from .gisaid_upload import verify_dataset, gisaid_upload
+from .sqlite_db import (
     parse_gisaid_jsons,
     add_to_sqlite_db,
     collect_unreleased,
     gisaid_search,
     update_release_status,
 )
-from gisaid_download import gisaid_download
+from .gisaid_download import gisaid_download
 
 
 def collect_common_vars(args):
