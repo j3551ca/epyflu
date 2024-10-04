@@ -128,8 +128,8 @@ def add_common_args(subcommand):
 
 def main(args):
 
-    if args.command is None:
-        print("Error: No subcommand provided. Please specify a subcommand (upload, update, download).")
+    if args.command is None or args.command not in [ "upload", "update", "download"]:
+        print("Error: No valid subcommand provided. Please specify a subcommand (upload, update, download).")
         parser.print_help()
     else:
         usr, psswd, var_source = collect_common_vars(args)
