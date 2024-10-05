@@ -126,43 +126,8 @@ def add_common_args(subcommand):
     subcommand.add_argument("-p", "--password", type=str, help="GISAID EpiFlu password.")
 
 
-def main(args):
-
-    if args.command is None or args.command not in [ "upload", "update", "download"]:
-        print("Error: No valid subcommand provided. Please specify a subcommand (upload, update, download).")
-        parser.print_help()
-    else:
-        usr, psswd, var_source = collect_common_vars(args)
-
-        if args.command == "upload":
-            cid, input_dir, log_dir, dateform = upload_vars(args, var_source)
-            # print(f"upload subcommand {var_source}")
-            db_path = update_vars(args)
-            verified_datasets = verify_dataset(input_dir)
-            gisaid_jsons = gisaid_upload(verified_datasets, usr, psswd, cid, dateform, log_dir)
-            isl_meta, segs_df = parse_gisaid_jsons(gisaid_jsons)
-            add_to_sqlite_db(isl_meta, "isolate_meta", db_path)
-            add_to_sqlite_db(segs_df, "segment_seqs", db_path)
-
-        elif args.command == "update":
-
-            db_path = update_vars(args)
-            if not os.path.isfile(db_path):
-                print("This database does not exist. Run epyflu upload first or check spelling matches existing db.")
-                sys.exit(1)
-            # gisaid_ids of isolates - showing as unreleased in sqlite db & part of isolate_id group that has
-            # no released gisaid_ids - to be searched in gisaid
-            not_released = collect_unreleased(db_path)
-            gisaid_df = gisaid_search(usr, psswd, not_released)
-            update_release_status(gisaid_df, db_path)
-
-        elif args.command == "download":
-            seg_list, download_type, out_file, gids = download_vars(args, var_source)
-            gisaid_download(usr, psswd, gids, out_file, download_type, seg_list)
-
-
-if __name__ == "__main__":
-
+def main():
+    
     parser = argparse.ArgumentParser(description="Upload flu seqs to GISAID and accession into local SQLite database.")
     # subcommand parsers
     subparsers = parser.add_subparsers(dest="command", help="epyflu subcommands.")
@@ -233,4 +198,39 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    main(args)
+    if args.command is None or args.command not in [ "upload", "update", "download"]:
+        print("Error: No valid subcommand provided. Please specify a subcommand (upload, update, download).")
+        parser.print_help()
+    else:
+        usr, psswd, var_source = collect_common_vars(args)
+
+        if args.command == "upload":
+            cid, input_dir, log_dir, dateform = upload_vars(args, var_source)
+            # print(f"upload subcommand {var_source}")
+            db_path = update_vars(args)
+            verified_datasets = verify_dataset(input_dir)
+            gisaid_jsons = gisaid_upload(verified_datasets, usr, psswd, cid, dateform, log_dir)
+            isl_meta, segs_df = parse_gisaid_jsons(gisaid_jsons)
+            add_to_sqlite_db(isl_meta, "isolate_meta", db_path)
+            add_to_sqlite_db(segs_df, "segment_seqs", db_path)
+
+        elif args.command == "update":
+
+            db_path = update_vars(args)
+            if not os.path.isfile(db_path):
+                print("This database does not exist. Run epyflu upload first or check spelling matches existing db.")
+                sys.exit(1)
+            # gisaid_ids of isolates - showing as unreleased in sqlite db & part of isolate_id group that has
+            # no released gisaid_ids - to be searched in gisaid
+            not_released = collect_unreleased(db_path)
+            gisaid_df = gisaid_search(usr, psswd, not_released)
+            update_release_status(gisaid_df, db_path)
+
+        elif args.command == "download":
+            seg_list, download_type, out_file, gids = download_vars(args, var_source)
+            gisaid_download(usr, psswd, gids, out_file, download_type, seg_list)
+
+
+if __name__ == "__main__":
+
+    main()
