@@ -48,6 +48,8 @@ def download_vars(args, var_source):
     seg_list = args.segments or "HA,NA"
     download_type = args.download_type or "metadata"
     gids = args.gisaid_ids
+    out_file = args.output
+    
     if not args.output:
         out_file = input("Please enter path to file to write download to (*.xls for meta; *.fa for seqs): ")
         if not out_file:
