@@ -49,7 +49,6 @@ def download_vars(args, var_source):
     download_type = args.download_type or "metadata"
     gids = args.gisaid_ids
     out_file = args.output
-    
     if not args.output:
         out_file = input("Please enter path to file to write download to (*.xls for meta; *.fa for seqs): ")
         if not out_file:
@@ -86,6 +85,7 @@ def upload_vars(args, var_source):
     input_dir = args.input
     log_dir = args.log
     dateform = args.dateformat or "YYYYMMDD"
+    db_path = args.database
 
     if not input_dir:
         input_dir = input("Please enter path to folder containing dataset(s) to upload: ").strip()
@@ -115,8 +115,13 @@ def upload_vars(args, var_source):
         )
         if dateformat:
             dateform = dateformat
+    if not args.database:
+        db_path = input("Specify path to existing or new SQLite database (*.db): ").strip()
+        if not db_path:
+            print("Error: No database specified.")
+            sys.exit(1)
 
-    return cid, input_dir, log_dir, dateform
+    return cid, input_dir, log_dir, dateform, db_path
 
 
 def add_common_args(subcommand):
@@ -160,6 +165,12 @@ def main():
         help="The format of dates in GISAID EpiFlu metadata <YYYYMMDD>.",
     )
     upload_parser.add_argument("-l", "--log", type=str, help="Path to dir to write log to.")
+    upload_parser.add_argument(
+        "-b",
+        "--database",
+        type=str,
+        help="Path to file to write sqlite database to (*.db).",
+    )
 
     # refresh availability of isolates on GISAID in local db
     update_parser.add_argument(
@@ -207,9 +218,7 @@ def main():
         usr, psswd, var_source = collect_common_vars(args)
 
         if args.command == "upload":
-            cid, input_dir, log_dir, dateform = upload_vars(args, var_source)
-            # print(f"upload subcommand {var_source}")
-            db_path = update_vars(args)
+            cid, input_dir, log_dir, dateform, db_path = upload_vars(args, var_source)
             verified_datasets = verify_dataset(input_dir)
             gisaid_jsons = gisaid_upload(verified_datasets, usr, psswd, cid, dateform, log_dir)
             isl_meta, segs_df = parse_gisaid_jsons(gisaid_jsons)
