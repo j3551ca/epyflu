@@ -18,7 +18,7 @@ epyflu assists in uploading sequences and associated metadata to the GISAID EpiF
 ## Quick-Start
 
 ```
-pip install epyflu
+pip install epyflu git+https://github.com/j3551ca/gisflu.git@master#egg=gisflu
 
 import epyflu
 
