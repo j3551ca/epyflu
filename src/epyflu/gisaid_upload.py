@@ -62,8 +62,8 @@ def gisaid_upload(
     input: dictionary of {name: (meta, seqs)}.
     output: dict of GISAID logs {name: path/to/log/json}.
     """
-
-    executable = os.path.join(os.getcwd(), "bin", "fluCLI")
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    executable = os.path.join(current_dir, "bin", "fluCLI")
 
     if not os.path.isfile(executable):
         print(f"Error: GISAID executable not found in {executable}.\nCheck path & permissions.")
