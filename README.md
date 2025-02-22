@@ -124,7 +124,7 @@ This subcommand allows variables to be interactively passed to the download func
 
 - The metadata csv and sequence multifasta are in the same directory and named with the same, unique prefix (ex. 20240731-131521.fa & 20240731-131521.csv) so that epyflu can detect the pair.
 - Each of the fasta headers in the multifasta are named to match Seq_Id (HA), Seq_Id (NA), etc. For example, >A/Location/ISL-1234/2025_HA (see below)
-- Metadata template using an uploaded isolate as an example:
+- Metadata template using influenza isolate A/Location/ISL-1234/2025 as an example:
 ```
 Isolate_Id,Segment_Ids,Isolate_Name,Subtype,Lineage,Passage_History,Location,province,sub_province,Location_Additional_info,Host,Host_Additional_info,Seq_Id (HA),Seq_Id (NA),Seq_Id (PB1),Seq_Id (PB2),Seq_Id (PA),Seq_Id (MP),Seq_Id (NS),Seq_Id (NP),Seq_Id (HE),Seq_Id (P3),Submitting_Sample_Id,Authors,Originating_Lab_Id,Originating_Sample_Id,Collection_Month,Collection_Year,Collection_Date,Antigen_Character,Adamantanes_Resistance_geno,Oseltamivir_Resistance_geno,Zanamivir_Resistance_geno,Peramivir_Resistance_geno,Other_Resistance_geno,Adamantanes_Resistance_pheno,Oseltamivir_Resistance_pheno,Zanamivir_Resistance_pheno,Peramivir_Resistance_pheno,Other_Resistance_pheno,Host_Age,Host_Age_Unit,Host_Gender,Health_Status,Note,PMID
 ,,A/Location/ISL-1234/2025,H1N1,,Original,Canada,Province Territory,,,Human,,A/Location/ISL-1234/2025_HA,A/Location/ISL-1234/2025_NA,A/Location/ISL-1234/2025_PB1,A/Location/ISL-1234/2025_PB2,A/Location/ISL-1234/2025_PA,A/Location/ISL-1234/2025_M,A/Location/ISL-1234/2025_NS,A/Location/ISL-1234/2025_NP,,,,"lastname,firstname; lastname,firstname; lastname,firstname; lastname,firstname",2222,,,,2025-01-09,,,,,,,,,,,,,,,,,
